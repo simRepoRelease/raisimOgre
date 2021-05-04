@@ -56,7 +56,7 @@ public:
 
   /** return a pointer of the singleton**/
   static OgreVis *get() {
-    if(!singletonPtr) 
+    if(!singletonPtr)
       singletonPtr.reset(new OgreVis);
     return singletonPtr.get();
   }
@@ -225,7 +225,8 @@ public:
   * @param name unique identifier of the object */
   std::vector<GraphicObject> *createGraphicalObject(raisim::Mesh *mesh,
                                                     const std::string &name,
-                                                    const std::string &material = "default");
+                                                    const std::string &material = "default",
+                                                    double scale = 1.0);
 
   /**
   * @param as raisim articulated system object
@@ -458,7 +459,5 @@ private:
 };
 
 } // namespace raisim
-
-std::unique_ptr<raisim::OgreVis> raisim::OgreVis::singletonPtr(nullptr);
 
 #endif // RAISIM_OGRE_VIS_HPP

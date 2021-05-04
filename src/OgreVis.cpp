@@ -16,6 +16,8 @@
 
 namespace raisim {
 
+std::unique_ptr<raisim::OgreVis> raisim::OgreVis::singletonPtr(nullptr);
+
 OgreVis::~OgreVis() {
   if (videoThread_ && videoThread_->joinable()) videoThread_->join();
 }
@@ -1175,7 +1177,8 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::HeightMap *hm
 
 std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Mesh *mesh,
                                                            const std::string &name,
-                                                           const std::string &material) {
+                                                           const std::string &material,
+                                                           double scale) {
 
   Mat<3, 3> rot;
   rot.setIdentity();
@@ -1186,7 +1189,7 @@ std::vector<GraphicObject> *OgreVis::createGraphicalObject(raisim::Mesh *mesh,
           createSingleGraphicalObject(name,
                                       meshName,
                                       material,
-                                      {1, 1, 1},
+                                      {scale, scale, scale},
                                       {0, 0, 0},
                                       rot,
                                       0,
@@ -1301,7 +1304,8 @@ void OgreVis::renderOneFrame() {
     raisim::Vec<3> mid, p1, p2, norm;
     raisim::Mat<3, 3> rot;
     auto wobj = world_->getWire(wire.first);
-    wobj->update();
+    contact::ContactProblems contact_problems;
+    wobj->update(contact_problems);
     p1 = wobj->getP1();
     p2 = wobj->getP2();
     raisim::vecadd(p1, p2, mid);
